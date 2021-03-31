@@ -4,6 +4,7 @@ const username = document.querySelector("#username");
 const send = document.querySelector("#send");
 
 const dice = ["d4", "d6", "d8", "d10", "d12", "d20", "d100"];
+let rollNum = 1;
 
 const url = "ws://" + window.location.host + "/ws";
 const ws = new WebSocket(url);
@@ -15,11 +16,13 @@ ws.onmessage = function (msg) {
 function setOnClicks() {
   dice.map((die) => {
     let button = document.querySelector(`#${die}`);
+    console.log("Setting on click for ", button)
     button.onclick = () => {
       const message = {
         dieType: die,
+        rollNum: rollNum,
       };
-      console.log({message})
+      console.log("Sending message", {message})
       ws.send(JSON.stringify(message));
     };
   });

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"math/rand"
 
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
@@ -26,8 +25,8 @@ type roll struct {
 }
 
 type inputRoll struct {
-	dieType  string `json:"dieType validate:"required"`
-	numRolls uint64 `json:"numRolls validate:"gte=1,required"`
+	dieType  string `json:"dieType" validate:"required"`
+	numRolls uint64 `json:"numRolls" validate:"gte=1,required"`
 }
 
 func NewRoll() *roll {
@@ -46,32 +45,35 @@ var dice = map[string]*die{
 }
 
 func rollDice(message []byte) *roll {
-	var data inputRoll
-	if err := json.Unmarshal(message, &data); err != nil {
+	fmt.Println("Rolling dice", string(message))
+	var dat inputRoll
+	if err := json.Unmarshal(message, &dat); err != nil {
 		log.Println(err)
 		return NewRoll()
 	}
-	if !jsonIsValid(data) {
-		return NewRoll()
-	}
-	r := NewRoll()
-	numSides := dice[data.dieType].sides
-	var total int64
-	for i := uint64(0); i < data.numRolls; i++ {
-		result := rand.Int63n(numSides) + 1
-		total += result
-		r.rolls = append(r.rolls, result)
-	}
-	r.total = total
-	r.dieType = data.dieType
+	log.Println(dat)
+	// if !jsonIsValid(dat) {
+	// 	return NewRoll()
+	// }
+	// r := NewRoll()
+	// numSides := dice[dat.dieType].sides
+	// var total int64
+	// for i := uint64(0); i < dat.numRolls; i++ {
+	// 	result := rand.Int63n(numSides) + 1
+	// 	total += result
+	// 	r.rolls = append(r.rolls, result)
+	// }
+	// r.total = total
+	// r.dieType = dat.dieType
 
-	log.Println(r)
-	return r
+	// log.Println(r)
+	// return r
+	return NewRoll()
 }
 
-func jsonIsValid(data inputRoll) bool {
+func jsonIsValid(dat inputRoll) bool {
 	v := validator.New()
-	err := v.Struct(data)
+	err := v.Struct(dat)
 	if err != nil {
 		fmt.Println(err)
 		return false
