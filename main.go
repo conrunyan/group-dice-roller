@@ -10,6 +10,15 @@ import (
 
 const IndexFile = "./public/index.html"
 
+type die struct {
+	sides int
+	name  string
+}
+
+var dice = map[string]*die{
+	"d4": &die{4, "d4"},
+}
+
 func main() {
 	r := gin.Default()
 	m := melody.New()
